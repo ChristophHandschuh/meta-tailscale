@@ -1,4 +1,4 @@
-OpenEmbedded layer for Tailscale 1.48.1
+OpenEmbedded/Yocto layer for Tailscale 1.48.1
 
 This Layer supports Arm architecture. If your board uses an other architecture edit the download link and the corresponding Folder names.
 The latest releases of Tailscale stable binaries can be found at: https://pkgs.tailscale.com/stable/#static 
