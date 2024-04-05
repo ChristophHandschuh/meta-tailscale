@@ -1,6 +1,6 @@
-OpenEmbedded/Yocto layer for Tailscale 1.52.1
+OpenEmbedded/Yocto layer for Tailscale
 
-This Layer supports arm/arm64/i386/x88_64 architectures. If your board uses an other architecture edit the download link and the corresponding Folder names.
+This layer supports arm/arm64/i386/x86_64 architectures. If your board uses an other architecture edit the download link and the corresponding Folder names.
 
 Note this recipe uses the pre-built binaries from Tailscale and does not attempt to build it from source.
 
