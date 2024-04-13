@@ -1,8 +1,5 @@
 require tailscale.inc
 
-# See: https://pkgs.tailscale.com/stable/
-SRC_URI = "https://pkgs.tailscale.com/stable/tailscale_${PV}_${ARCH_DIR}.tgz;subdir=${P};name=${ARCH_DIR}"
-
 # Find checksum with: https://pkgs.tailscale.com/stable/tailscale_${PV}_${ARCH_DIR}.tgz.sha256
 SRC_URI[386.sha256sum]       = "4021a24335786f02a53671051003227ba86bccb6216dee3b28adf91ebea64cf7"
 SRC_URI[amd64.sha256sum]     = "d9fe6b480fb5078f0aa57dace686898dda7e2a768884271159faa74846bfb576"
