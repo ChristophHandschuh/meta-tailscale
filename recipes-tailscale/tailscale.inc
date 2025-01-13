@@ -53,8 +53,10 @@ do_install() {
 
   ln -s ${systemd_unitdir}/system/tailscaled.service ${D}${sysconfdir}/systemd/system/multi-user.target.wants/tailscaled.service
 
-  #fi
 }
+
+DEPENDS += "iptables"
+RDEPENDS:${PN} += "iptables"
 
 SYSTEMD_PACKAGES = "${PN}"
 
