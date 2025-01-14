@@ -56,6 +56,9 @@ do_install() {
   #fi
 }
 
+DEPENDS += "iptables"
+RDEPENDS:${PN} += "iptables"
+
 SYSTEMD_PACKAGES = "${PN}"
 
 SYSTEMD_SERVICE_${PN} = "tailscaled.service"
