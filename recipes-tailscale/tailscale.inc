@@ -61,6 +61,6 @@ RDEPENDS:${PN} += "iptables"
 
 SYSTEMD_PACKAGES = "${PN}"
 
-SYSTEMD_SERVICE_${PN} = "tailscaled.service"
+SYSTEMD_SERVICE:${PN} = "tailscaled.service"
 
 SYSTEMD_AUTO_ENABLE = "enable"
