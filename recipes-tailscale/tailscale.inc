@@ -5,8 +5,9 @@ SECTION = "net"
 
 LICENSE = "CLOSED"
 
-COMPATIBLE_HOST = ".*(aarch64|arm|x86\_64|i386).*"
+INHIBIT_DEFAULT_DEPS = "1"
 
+ARCH_DIR ?= "Unsupported"
 ARCH_DIR:i386 = "386"
 ARCH_DIR:x86-64 = "amd64"
 ARCH_DIR:aarch64 = "arm64"
@@ -20,47 +21,37 @@ inherit systemd
 # Runtime dependencies, iptables required.
 RDEPENDS:${PN} = "iptables"
 
-FILES_${PN} += "${systemd_unitdir}/*"
-FILES:${PN} += "/lib /lib/systemd/"
-FILES:${PN} += "/usr/lib"
-FILES:${PN} += "/usr/lib/systemd"
-FILES:${PN} += "/usr/lib/systemd/system"
-FILES:${PN} += "/usr/lib/systemd/system/tailscaled.service"
+# Runtime recommendations, kernel modules required
+# RECOMMEDS as a kernel config might build them in rather than
+# package as a module.
+RRECOMMENDS:${PN} = "\
+    kernel-module-wireguard \
+    kernel-module-tun \
+    kernel-module-xt-mark \
+    kernel-module-xt-tcpudp \
+    kernel-module-xt-masquerade"
+
+#FILES_${PN} += "${systemd_unitdir}/*"
+#FILES:${PN} += "${sysconfdir}/default/*"
+
+SYSTEMD_PACKAGES = "${PN}"
+SYSTEMD_SERVICE:${PN} = "tailscaled.service"
+SYSTEMD_AUTO_ENABLE = "enable"
 
 S = "${WORKDIR}/${PN}-${PV}/${PN}_${PV}_${ARCH_DIR}"
 
 do_install() {
   install -d ${D}/${bindir}
-
-  install -d ${D}/${sbindir}
-
   install ${S}/tailscale ${D}/${bindir}/tailscale
 
+  install -d ${D}/${sbindir}
   install ${S}/tailscaled ${D}/${sbindir}/tailscaled
 
-  # TODO: Not working for some reason.
-  #if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
+  if ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'true', 'false', d)}; then
+    install -d ${D}${sysconfdir}/default/
+    install -m 0644 ${S}/systemd/tailscaled.defaults ${D}${sysconfdir}/default/tailscaled
 
-  install -d ${D}${sysconfdir}/default/
-
-  install -m 0644 ${S}/systemd/tailscaled.defaults ${D}${sysconfdir}/default/tailscaled
-
-  install -d ${D}${systemd_unitdir}/system
-
-  install -m 0644 ${S}/systemd/tailscaled.service ${D}${systemd_unitdir}/system/tailscaled.service
-
-  install -d ${D}${sysconfdir}/systemd/system/multi-user.target.wants/
-
-  ln -s ${systemd_unitdir}/system/tailscaled.service ${D}${sysconfdir}/systemd/system/multi-user.target.wants/tailscaled.service
-
-  #fi
+    install -d ${D}${systemd_unitdir}/system
+    install -m 0644 ${S}/systemd/tailscaled.service ${D}${systemd_unitdir}/system/tailscaled.service
+  fi
 }
-
-DEPENDS += "iptables"
-RDEPENDS:${PN} += "iptables"
-
-SYSTEMD_PACKAGES = "${PN}"
-
-SYSTEMD_SERVICE:${PN} = "tailscaled.service"
-
-SYSTEMD_AUTO_ENABLE = "enable"
