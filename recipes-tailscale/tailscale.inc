@@ -18,6 +18,8 @@ SRC_URI = "https://pkgs.tailscale.com/stable/tailscale_${PV}_${ARCH_DIR}.tgz;sub
 
 inherit systemd
 
+# These are needed to do the package splitting
+DEPENDS:append = " virtual/${HOST_PREFIX}gcc virtual/${HOST_PREFIX}compilerlibs virtual/libc"
 # Runtime dependencies, iptables required.
 RDEPENDS:${PN} = "iptables"
 
@@ -30,9 +32,6 @@ RRECOMMENDS:${PN} = "\
     kernel-module-xt-mark \
     kernel-module-xt-tcpudp \
     kernel-module-xt-masquerade"
-
-#FILES_${PN} += "${systemd_unitdir}/*"
-#FILES:${PN} += "${sysconfdir}/default/*"
 
 SYSTEMD_PACKAGES = "${PN}"
 SYSTEMD_SERVICE:${PN} = "tailscaled.service"
